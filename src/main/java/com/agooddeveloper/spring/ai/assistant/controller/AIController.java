@@ -3,7 +3,9 @@ package com.agooddeveloper.spring.ai.assistant.controller;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.impl.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 @RestController
 public class AIController {
@@ -21,8 +23,8 @@ public class AIController {
     }
 
     @GetMapping("/chat")
-    public String getChatResponse() {
-        return chatService.getResponse("Hello How Are You");
+    public Flux<String> getChatResponse(@RequestParam String prompt) {
+        return chatService.getResponse(prompt);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.agooddeveloper.spring.ai.assistant.service.chatservice;
 
+import reactor.core.publisher.Flux;
+
 public interface IAIService {
-    String getResponse(String prompt);
+    Flux<String> getResponse(String prompt);
 }

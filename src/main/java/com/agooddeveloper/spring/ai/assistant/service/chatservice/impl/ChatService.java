@@ -8,6 +8,7 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 @Data
 @Service
@@ -22,7 +23,7 @@ public class ChatService implements IAIService {
 
 
     @Override
-    public String getResponse(String prompt) {
+    public Flux<String> getResponse(String prompt) {
         ChatResponse response = openAiChatModel.call(
                 new Prompt(
                         prompt,
@@ -31,6 +32,6 @@ public class ChatService implements IAIService {
                                 .withTemperature(0.4F)
                                 .build()
                 ));
-        return response.getResult().getOutput().getContent();
+        return Flux.just(response.getResult().getOutput().getContent());
     }
 }
