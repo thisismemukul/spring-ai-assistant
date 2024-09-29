@@ -1,7 +1,10 @@
 package com.agooddeveloper.spring.ai.assistant.exceptions;
 
-public class ValidationException extends RuntimeException {
+import java.io.Serial;
 
+public class ValidationException extends RuntimeException {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private final IBaseError<?> iBaseError;
 
     public ValidationException(IBaseError<?> iBaseError) {
