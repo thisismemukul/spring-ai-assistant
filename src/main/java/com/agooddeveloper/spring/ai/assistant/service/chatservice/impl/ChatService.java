@@ -31,7 +31,6 @@ public class ChatService implements IAIService {
                                 .withTemperature(0.4F)
                                 .build()
                 ));
-        System.out.println(response);
-        return "I will return AI response.";
+        return response.getResult().getOutput().getContent();
     }
 }
