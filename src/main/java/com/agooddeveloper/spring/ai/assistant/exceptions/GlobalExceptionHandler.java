@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import static com.agooddeveloper.spring.ai.assistant.constants.Constants.VALIDATION_ERROR;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -15,7 +17,7 @@ public class GlobalExceptionHandler {
                 ex.getIBaseError().getErrorCode(),
                 ex.getIBaseError().getErrorMessage(),
                 ex.getIBaseError().getUserMessage(),
-                "Validation Error",
+                VALIDATION_ERROR,
                 ex.getIBaseError().displayMsg()
         );
         ApiResponse<DefaultBaseError<?>> apiResponse = new ApiResponse<>(

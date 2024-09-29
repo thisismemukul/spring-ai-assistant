@@ -11,8 +11,9 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static com.agooddeveloper.spring.ai.assistant.constants.Constants.AI_MODEL;
 
 @Data
 @Service
@@ -42,7 +43,7 @@ public class ChatService implements IAIService {
                     new Prompt(
                             prompt,
                             OpenAiChatOptions.builder()
-                                    .withModel("mixtral-8x7b-32768")
+                                    .withModel(AI_MODEL)
                                     .withTemperature(0.4F)
                                     .build()
                     ));
