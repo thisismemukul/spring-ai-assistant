@@ -2,6 +2,7 @@ package com.agooddeveloper.spring.ai.assistant.service.chatservice.impl;
 
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.IAIService;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -24,6 +25,9 @@ public class ChatService implements IAIService {
 
     @Override
     public Flux<String> getResponse(String prompt) {
+        if (StringUtils.isBlank(prompt)) {
+            return Flux.error(new IllegalArgumentException("Prompt is empty"));
+        }
         ChatResponse response = openAiChatModel.call(
                 new Prompt(
                         prompt,
