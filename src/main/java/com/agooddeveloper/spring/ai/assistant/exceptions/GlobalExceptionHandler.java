@@ -1,5 +1,6 @@
 package com.agooddeveloper.spring.ai.assistant.exceptions;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -7,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
-    public DefaultBaseError<?> handleValidationException(ValidationException ex) {
+    public ResponseEntity<DefaultBaseError<?>> handleValidationException(ValidationException ex) {
         DefaultBaseError<Object> objectDefaultBaseError = new DefaultBaseError<>(
                 ex.getIBaseError().getErrorCode(),
                 ex.getIBaseError().getErrorMessage(),
@@ -15,6 +16,6 @@ public class GlobalExceptionHandler {
                 "Validation Error",
                 ex.getIBaseError().displayMsg()
         );
-        return objectDefaultBaseError;
+        return ResponseEntity.badRequest().body(objectDefaultBaseError);
     }
 }
