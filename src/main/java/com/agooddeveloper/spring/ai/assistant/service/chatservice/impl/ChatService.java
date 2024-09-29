@@ -1,5 +1,7 @@
 package com.agooddeveloper.spring.ai.assistant.service.chatservice.impl;
 
+import com.agooddeveloper.spring.ai.assistant.exceptions.DefaultBaseError;
+import com.agooddeveloper.spring.ai.assistant.exceptions.ValidationException;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.IAIService;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +28,13 @@ public class ChatService implements IAIService {
     @Override
     public Flux<String> getResponse(String prompt) {
         if (StringUtils.isBlank(prompt)) {
-            return Flux.error(new IllegalArgumentException("Prompt is empty"));
+            return Flux.error(
+                    new ValidationException(
+                            new DefaultBaseError<>(
+                                    "AI-4001",
+                                    "Prompt is empty",
+                                    "Ugh !! seams like you forgot to say something")
+                    ));
         }
         ChatResponse response = openAiChatModel.call(
                 new Prompt(
