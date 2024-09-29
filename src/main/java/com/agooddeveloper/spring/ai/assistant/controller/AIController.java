@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static com.agooddeveloper.spring.ai.assistant.constants.Constants.AI_HEALTH_CHECK;
+import static com.agooddeveloper.spring.ai.assistant.constants.RESTUriConstants.*;
+
 @RestController
+@RequestMapping(value = ASK_AI)
 public class AIController {
 
     private final ChatService chatService;
@@ -21,12 +25,13 @@ public class AIController {
         this.chatService = chatService;
     }
 
-    @GetMapping("/health")
-    public String health() {
-        return "I am healthy";
+    @GetMapping(HEALTH_CHECK)
+    public ResponseEntity<ApiResponse<String>> index() {
+        ApiResponse<String> response = new ApiResponse<>(AI_HEALTH_CHECK, HttpStatus.OK.value(), "AI API");
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/chat")
+    @GetMapping(CHAT)
     public Mono<ResponseEntity<ApiResponse<String>>> getChatResponse(@RequestParam String prompt) {
         return chatService.getResponse(prompt)
                 .flatMap(result -> successResponse("Created successfully", HttpStatus.OK, result))
