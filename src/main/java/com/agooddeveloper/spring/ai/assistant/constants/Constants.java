@@ -38,8 +38,12 @@ public class Constants {
     public static final String NULL_POINTER_EXCEPTION_MESSAGE = "A null pointer exception occurred: ";
     public static final String NULL_POINTER_EXCEPTION_USER_MESSAGE = "Yikes! Something’s missing! 😱 The bugs must be having a party. 🐛🍕";
 
+    public static final String RUNTIME_EXCEPTION_MESSAGE = "A runtime error occurred. ";
+    public static final String RUNTIME_EXCEPTION_USER_MESSAGE = "Oops! Something went wrong while we were running! ⚡";
+
     // Exception Messages
     public static final String VALIDATION_ERROR = "VALIDATION_ERROR";
     public static final String NULL_POINTER = "NULL_POINTER";
+    public static final String RUNTIME_ERROR = "RUNTIME_ERROR";
 
 }

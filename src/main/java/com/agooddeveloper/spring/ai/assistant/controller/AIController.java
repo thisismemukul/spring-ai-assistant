@@ -37,9 +37,7 @@ public class AIController {
     }
 
     private <T> Mono<ResponseEntity<ApiResponse<T>>> errorResponse(Throwable e) {
-        return Mono.just(ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiResponse<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null)));
+        return Mono.error(e);
     }
 
 }

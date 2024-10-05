@@ -72,22 +72,27 @@ public class ChatService implements IAIService {
 
     private Mono<String> openAIChat(String prompt, ChatModel model) {
         return Mono.fromCallable(() -> {
-            ChatResponse response = model.call(
-                    new Prompt(
-                            prompt,
-                            OpenAiChatOptions.builder()
-                                    .withModel(AI_MODEL)
-                                    .withTemperature(0.4F)
-                                    .build()
-                    ));
-            return response.getResult().getOutput().getContent();
+            try {
+                ChatResponse response = model.call(
+                        new Prompt(
+                                prompt,
+                                OpenAiChatOptions.builder()
+                                        .withModel(AI_MODEL)
+                                        .withTemperature(0.4F)
+                                        .build()
+                        ));
+                return response.getResult().getOutput().getContent();
+            }catch (Exception e) {
+                log.error("Error occurred while processing chat prompt: '{}'", prompt, e);
+                throw new RuntimeException(e.getMessage(), e);
+            }
         });
     }
 
 
     private Mono<String> ollamaChat(String prompt, ChatModel model) {
-        try{
-            return Mono.fromCallable(() -> {
+        return Mono.fromCallable(() -> {
+            try {
                 ChatResponse response = model.call(
                         new Prompt(
                                 prompt,
@@ -97,12 +102,10 @@ public class ChatService implements IAIService {
                                         .build()
                         ));
                 return response.getResult().getOutput().getContent();
-            });
-        }catch (Exception e){
-            log.error("Error ",e);
-            return Mono.error(
-                 new RuntimeException(e.getMessage(), e)
-            );
-        }
+            } catch (Exception e) {
+                log.error("Error occurred while processing chat prompt: '{}'", prompt, e);
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        });
     }
 }

@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import static com.agooddeveloper.spring.ai.assistant.constants.Constants.NULL_POINTER;
-import static com.agooddeveloper.spring.ai.assistant.constants.Constants.VALIDATION_ERROR;
+import static com.agooddeveloper.spring.ai.assistant.constants.Constants.*;
 import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.NULL_POINTER_EXCEPTION;
+import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.RUNTIME_EXCEPTION;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -46,5 +46,23 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiResponse<DefaultBaseError<?>>> handleRuntimeException(RuntimeException ex) {
+        DefaultBaseError<?> errorResponse = new DefaultBaseError<>(
+                RUNTIME_EXCEPTION.code(),
+                RUNTIME_EXCEPTION.message() + ex.getMessage(),
+                RUNTIME_EXCEPTION.userMessage(),
+                RUNTIME_ERROR,
+                false
+        );
+        ApiResponse<DefaultBaseError<?>> apiResponse = new ApiResponse<>(
+                RUNTIME_EXCEPTION.message(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                errorResponse
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+    }
+
 
 }
