@@ -6,9 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.concurrent.TimeoutException;
+
 import static com.agooddeveloper.spring.ai.assistant.constants.Constants.*;
-import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.NULL_POINTER_EXCEPTION;
-import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.RUNTIME_EXCEPTION;
+import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -48,6 +49,19 @@ public class GlobalExceptionHandler {
                 RUNTIME_ERROR,
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 RUNTIME_EXCEPTION.message(),
+                false
+        );
+    }
+
+    @ExceptionHandler(TimeoutException.class)
+    public ResponseEntity<ApiResponse<DefaultBaseError<?>>> handleTimeoutException(TimeoutException ex) {
+        return buildErrorResponse(
+                TIMEOUT_EXCEPTION.code(),
+                TIMEOUT_EXCEPTION.message() + ex.getMessage(),
+                TIMEOUT_EXCEPTION.userMessage(),
+                TIMEOUT_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                TIMEOUT_EXCEPTION.message(),
                 false
         );
     }

@@ -12,6 +12,9 @@ import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+
+import java.util.concurrent.TimeoutException;
 
 import static com.agooddeveloper.spring.ai.assistant.constants.Constants.*;
 import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.MODEL_IS_INVALID;
@@ -39,10 +42,20 @@ public class ChatService implements IAIService {
                 .flatMap(validModel -> {
                     switch (validModel) {
                         case OPEN_AI -> {
-                            return openAIChat(prompt, openAiChatModel);
+                            return openAIChat(prompt, openAiChatModel)
+                                    .timeout(OPEN_AI_TIMEOUT)
+                                    .onErrorResume(TimeoutException.class, e -> {
+                                        log.error("Timeout occurred while processing openai chat prompt: '{}'", prompt, e);
+                                        return Mono.error(new TimeoutException(e.getMessage()));
+                                    });
                         }
                         case O_LLAMA_AI -> {
-                            return ollamaChat(prompt, ollamaChatModel);
+                            return ollamaChat(prompt, ollamaChatModel)
+                                    .timeout(O_LLAMA_AI_TIMEOUT)
+                                    .onErrorResume(TimeoutException.class, e -> {
+                                        log.error("Timeout occurred while processing ollama chat prompt: '{}'", prompt, e);
+                                        return Mono.error(new TimeoutException(e.getMessage()));
+                                    });
                         }
                         default -> {
                             return Mono.error(createValidationException(MODEL_IS_INVALID));
@@ -63,12 +76,13 @@ public class ChatService implements IAIService {
                                         .withTemperature(0.4F)
                                         .build()
                         ));
+                log.info("Response received for openAIChat");
                 return response.getResult().getOutput().getContent();
             } catch (Exception e) {
                 log.error("Error occurred while processing chat prompt: '{}'", prompt, e);
                 throw new RuntimeException(e.getMessage(), e);
             }
-        });
+        }).subscribeOn(Schedulers.boundedElastic()); // Prevent blocking
     }
 
 
@@ -83,11 +97,12 @@ public class ChatService implements IAIService {
                                         .withTemperature(0.4F)
                                         .build()
                         ));
+                log.info("Response received for ollamaChat");
                 return response.getResult().getOutput().getContent();
             } catch (Exception e) {
                 log.error("Error occurred while processing chat prompt: '{}'", prompt, e);
                 throw new RuntimeException(e.getMessage(), e);
             }
-        });
+        }).subscribeOn(Schedulers.boundedElastic()); // Prevent blocking
     }
 }

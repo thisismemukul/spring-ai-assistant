@@ -1,5 +1,7 @@
 package com.agooddeveloper.spring.ai.assistant.constants;
 
+import java.time.Duration;
+
 public class Constants {
     public static final String AI = "AI";
 
@@ -24,6 +26,9 @@ public class Constants {
     public static final String FAILED_MESSAGE = "FAILED";
     public static final String FAILED_USER_MESSAGE = "Oops! Something went wrong. Let's try again! 🙈";
 
+    public static final Duration OPEN_AI_TIMEOUT = Duration.ofSeconds(5);
+    public static final Duration O_LLAMA_AI_TIMEOUT = Duration.ofSeconds(10);
+
     //400
     public static final String BAD_REQUEST_MESSAGE = "Please check your input and try again!";
     public static final String BAD_REQUEST_USER_MESSAGE = "Whoa there! Looks like you hit a roadblock. 🚧 Don't leave me hanging—let's try that again! ✨";
@@ -41,9 +46,13 @@ public class Constants {
     public static final String RUNTIME_EXCEPTION_MESSAGE = "A runtime error occurred. ";
     public static final String RUNTIME_EXCEPTION_USER_MESSAGE = "Oops! Something went wrong while we were running! ⚡";
 
+    public static final String TIMEOUT_EXCEPTION_MESSAGE = "Model call timed out : ";
+    public static final String TIMEOUT_EXCEPTION_USER_MESSAGE = "Looks like our model went for a coffee break. We'll try harder next time! ☕";
+
     // Exception Messages
     public static final String VALIDATION_ERROR = "VALIDATION_ERROR";
     public static final String NULL_POINTER = "NULL_POINTER";
     public static final String RUNTIME_ERROR = "RUNTIME_ERROR";
+    public static final String TIMEOUT_ERROR = "TIMEOUT_ERROR";
 
 }
