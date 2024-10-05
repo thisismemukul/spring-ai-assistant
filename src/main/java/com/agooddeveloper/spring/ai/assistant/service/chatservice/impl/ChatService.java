@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import static com.agooddeveloper.spring.ai.assistant.constants.Constants.AI_MODEL;
+import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.PROMPT_IS_EMPTY;
 
 @Data
 @Service
@@ -33,9 +34,9 @@ public class ChatService implements IAIService {
             return Mono.error(
                     new ValidationException(
                             new DefaultBaseError<>(
-                                    "AI-4001",
-                                    "Prompt is empty",
-                                    "Ugh !! seams like you forgot to say something")
+                                    PROMPT_IS_EMPTY.code(),
+                                    PROMPT_IS_EMPTY.message(),
+                                    PROMPT_IS_EMPTY.userMessage())
                     ));
         }
         return Mono.fromCallable(() -> {

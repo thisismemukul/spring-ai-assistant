@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.Data;
 
+import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.SUCCESS;
+
 @Data
 @Builder
 @JsonSerialize
@@ -16,8 +18,8 @@ public class ApiResponse<T> {
     private final T data;
 
     public ApiResponse(T data) {
-        this.message = "SUCCESS";
-        this.status = Integer.parseInt("AI-0000");
+        this.message = SUCCESS.message();
+        this.status = Integer.parseInt(SUCCESS.code());
         this.data = data;
     }
 
