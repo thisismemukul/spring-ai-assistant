@@ -1,5 +1,6 @@
 package com.agooddeveloper.spring.ai.assistant.service.chatservice.impl;
 
+import com.agooddeveloper.spring.ai.assistant.enums.ResponseCode;
 import com.agooddeveloper.spring.ai.assistant.exceptions.DefaultBaseError;
 import com.agooddeveloper.spring.ai.assistant.exceptions.ValidationException;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.IAIService;
@@ -19,6 +20,8 @@ import reactor.core.publisher.Mono;
 import static com.agooddeveloper.spring.ai.assistant.constants.Constants.*;
 import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.MODEL_IS_INVALID;
 import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.PROMPT_IS_EMPTY;
+import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.createValidationException;
+import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.validateInputs;
 
 @Slf4j
 @Data
@@ -37,36 +40,20 @@ public class ChatService implements IAIService {
 
     @Override
     public Mono<String> getResponse(String prompt, String model) {
-        if (StringUtils.isBlank(prompt)) {
-            return Mono.error(
-                    new ValidationException(
-                            new DefaultBaseError<>(
-                                    PROMPT_IS_EMPTY.code(),
-                                    PROMPT_IS_EMPTY.message(),
-                                    PROMPT_IS_EMPTY.userMessage())
-                    ));
-        }
-
-        if (StringUtils.isBlank(model)) {
-            return Mono.error(
-                    new ValidationException(
-                            new DefaultBaseError<>(
-                                    MODEL_IS_INVALID.code(),
-                                    MODEL_IS_INVALID.message(),
-                                    MODEL_IS_INVALID.userMessage())
-                    ));
-        }
-        return switch (model.toLowerCase()) {
-            case OPEN_AI -> openAIChat(prompt, openAiChatModel);
-            case O_LLAMA_AI -> ollamaChat(prompt, ollamaChatModel);
-            default -> Mono.error(
-                    new ValidationException(
-                            new DefaultBaseError<>(
-                                    MODEL_IS_INVALID.code(),
-                                    MODEL_IS_INVALID.message(),
-                                    MODEL_IS_INVALID.userMessage())
-                    ));
-        };
+        return validateInputs(prompt, model)
+                .flatMap(validModel->{
+                    switch (validModel) {
+                        case OPEN_AI -> {
+                            return openAIChat(prompt, openAiChatModel);
+                        }
+                        case O_LLAMA_AI -> {
+                            return ollamaChat(prompt, ollamaChatModel);
+                        }
+                        default -> {
+                            return Mono.error(createValidationException(MODEL_IS_INVALID));
+                        }
+                    }
+                });
     }
 
 
