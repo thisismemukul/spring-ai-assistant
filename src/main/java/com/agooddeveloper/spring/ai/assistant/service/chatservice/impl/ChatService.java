@@ -1,12 +1,8 @@
 package com.agooddeveloper.spring.ai.assistant.service.chatservice.impl;
 
-import com.agooddeveloper.spring.ai.assistant.enums.ResponseCode;
-import com.agooddeveloper.spring.ai.assistant.exceptions.DefaultBaseError;
-import com.agooddeveloper.spring.ai.assistant.exceptions.ValidationException;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.IAIService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -19,7 +15,6 @@ import reactor.core.publisher.Mono;
 
 import static com.agooddeveloper.spring.ai.assistant.constants.Constants.*;
 import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.MODEL_IS_INVALID;
-import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.PROMPT_IS_EMPTY;
 import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.createValidationException;
 import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.validateInputs;
 
@@ -41,7 +36,7 @@ public class ChatService implements IAIService {
     @Override
     public Mono<String> getResponse(String prompt, String model) {
         return validateInputs(prompt, model)
-                .flatMap(validModel->{
+                .flatMap(validModel -> {
                     switch (validModel) {
                         case OPEN_AI -> {
                             return openAIChat(prompt, openAiChatModel);
@@ -69,7 +64,7 @@ public class ChatService implements IAIService {
                                         .build()
                         ));
                 return response.getResult().getOutput().getContent();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Error occurred while processing chat prompt: '{}'", prompt, e);
                 throw new RuntimeException(e.getMessage(), e);
             }
