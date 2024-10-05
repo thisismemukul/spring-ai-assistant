@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import static com.agooddeveloper.spring.ai.assistant.constants.Constants.AI_HEALTH_CHECK;
 import static com.agooddeveloper.spring.ai.assistant.constants.RESTUriConstants.*;
 
 @RestController
