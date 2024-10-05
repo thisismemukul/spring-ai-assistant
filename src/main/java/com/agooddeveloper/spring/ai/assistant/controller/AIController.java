@@ -25,11 +25,6 @@ public class AIController {
         this.chatService = chatService;
     }
 
-    @GetMapping(HEALTH_CHECK)
-    public ResponseEntity<ApiResponse<String>> index() {
-        ApiResponse<String> response = new ApiResponse<>(AI_HEALTH_CHECK, HttpStatus.OK.value(), "AI API");
-        return ResponseEntity.ok(response);
-    }
 
     @GetMapping(CHAT)
     public Mono<ResponseEntity<ApiResponse<String>>> getChatResponse(@RequestParam String prompt) {
