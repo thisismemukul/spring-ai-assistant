@@ -24,6 +24,7 @@ public class Constants {
     public static final String FAILED_MESSAGE = "FAILED";
     public static final String FAILED_USER_MESSAGE = "Oops! Something went wrong. Let's try again! 🙈";
 
+    //400
     public static final String BAD_REQUEST_MESSAGE = "Please check your input and try again!";
     public static final String BAD_REQUEST_USER_MESSAGE = "Whoa there! Looks like you hit a roadblock. 🚧 Don't leave me hanging—let's try that again! ✨";
 
@@ -33,7 +34,12 @@ public class Constants {
     public static final String MODEL_IS_INVALID_MESSAGE = "The specified model is not supported.";
     public static final String MODEL_IS_INVALID_USER_MESSAGE = "Uh-oh! Looks like you forgot to specify either 'openai' or 'ollama' as the model. 🗣️";
 
+    //500
+    public static final String NULL_POINTER_EXCEPTION_MESSAGE = "A null pointer exception occurred: ";
+    public static final String NULL_POINTER_EXCEPTION_USER_MESSAGE = "Yikes! Something’s missing! 😱 The bugs must be having a party. 🐛🍕";
+
     // Exception Messages
     public static final String VALIDATION_ERROR = "VALIDATION_ERROR";
+    public static final String NULL_POINTER = "NULL_POINTER";
 
 }
