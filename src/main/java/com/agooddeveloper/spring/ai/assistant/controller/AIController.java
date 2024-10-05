@@ -26,8 +26,8 @@ public class AIController {
 
 
     @GetMapping(CHAT)
-    public Mono<ResponseEntity<ApiResponse<String>>> getChatResponse(@RequestParam String prompt) {
-        return chatService.getResponse(prompt)
+    public Mono<ResponseEntity<ApiResponse<String>>> getChatResponse(@RequestParam String prompt, @RequestParam String model) {
+        return chatService.getResponse(prompt, model)
                 .flatMap(result -> successResponse("Created successfully", HttpStatus.OK, result))
                 .onErrorResume(this::errorResponse);
     }
