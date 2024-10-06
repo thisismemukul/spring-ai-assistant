@@ -1,5 +1,6 @@
 package com.agooddeveloper.spring.ai.assistant.service.chatservice.impl;
 
+import com.agooddeveloper.spring.ai.assistant.exceptions.ValidationException;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.IAIService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeoutException;
 import static com.agooddeveloper.spring.ai.assistant.constants.Constants.*;
 import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.MODEL_IS_INVALID;
 import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.createValidationException;
-import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.validateInputs;
+import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.validateChatInputs;
 
 @Slf4j
 @Data
@@ -37,8 +38,8 @@ public class ChatService implements IAIService {
 
 
     @Override
-    public Mono<String> getResponse(String prompt, String model) {
-        return validateInputs(prompt, model)
+    public Mono<String> getResponse(String prompt, String model) throws ValidationException {
+        return validateChatInputs(prompt, model)
                 .flatMap(validModel -> {
                     switch (validModel) {
                         case OPEN_AI -> {

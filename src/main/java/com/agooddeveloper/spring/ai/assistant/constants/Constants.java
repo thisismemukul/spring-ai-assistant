@@ -27,7 +27,7 @@ public class Constants {
     public static final String FAILED_USER_MESSAGE = "Oops! Something went wrong. Let's try again! 🙈";
 
     public static final Duration OPEN_AI_TIMEOUT = Duration.ofSeconds(5);
-    public static final Duration O_LLAMA_AI_TIMEOUT = Duration.ofSeconds(10);
+    public static final Duration O_LLAMA_AI_TIMEOUT = Duration.ofSeconds(100000);
 
     //400
     public static final String BAD_REQUEST_MESSAGE = "Please check your input and try again!";
@@ -38,6 +38,9 @@ public class Constants {
 
     public static final String MODEL_IS_INVALID_MESSAGE = "The specified model is not supported.";
     public static final String MODEL_IS_INVALID_USER_MESSAGE = "Uh-oh! Looks like you forgot to specify either 'openai' or 'ollama' as the model. 🗣️";
+
+    public static final String RECIPE_INPUT_IS_INVALID_MESSAGE = "Invalid Recipe input: ingredients, cuisine, or dietary restrictions are empty.";
+    public static final String RECIPE_INPUT_IS_INVALID_USER_MESSAGE = "Uh-oh! Looks like you forgot what are the ingredients, cuisine, or dietary restrictions. 👩‍🍳🔪";
 
     //500
     public static final String NULL_POINTER_EXCEPTION_MESSAGE = "A null pointer exception occurred: ";

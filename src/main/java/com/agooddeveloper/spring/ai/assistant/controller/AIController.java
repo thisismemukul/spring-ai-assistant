@@ -1,7 +1,9 @@
 package com.agooddeveloper.spring.ai.assistant.controller;
 
 import com.agooddeveloper.spring.ai.assistant.response.ApiResponse;
+import com.agooddeveloper.spring.ai.assistant.response.recipe.RecipeResponse;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.impl.ChatService;
+import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +20,30 @@ import static com.agooddeveloper.spring.ai.assistant.constants.RESTUriConstants.
 public class AIController {
 
     private final ChatService chatService;
+    private final RecipeService recipeService;
 
     @Autowired
-    public AIController(ChatService chatService) {
+    public AIController(ChatService chatService, RecipeService recipeService) {
         this.chatService = chatService;
+        this.recipeService = recipeService;
     }
+
 
 
     @GetMapping(CHAT)
     public Mono<ResponseEntity<ApiResponse<String>>> getChatResponse(@RequestParam String prompt, @RequestParam String model) {
         return chatService.getResponse(prompt, model)
                 .flatMap(result -> successResponse("Created successfully", HttpStatus.OK, result))
+                .onErrorResume(this::errorResponse);
+    }
+
+    @GetMapping(CREATE_RECIPE)
+    public Mono<ResponseEntity<ApiResponse<RecipeResponse>>> createRecipe(@RequestParam String ingredients,
+                                                                          @RequestParam(defaultValue = "any") String cuisine,
+                                                                          @RequestParam(defaultValue = "") String dietaryRestrictions,
+                                                                          @RequestParam String model) {
+        return recipeService.createPlan(ingredients, cuisine, dietaryRestrictions, model)
+                .flatMap(result -> successResponse("Recipe Created successfully", HttpStatus.OK, result))
                 .onErrorResume(this::errorResponse);
     }
 
