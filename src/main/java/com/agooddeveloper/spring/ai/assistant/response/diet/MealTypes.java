@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum MealType {
+public enum MealTypes {
     BREAKFAST("Breakfast"),
     MID_MORNING_SNACK("Mid-Morning Snack"),
     LUNCH("Lunch"),

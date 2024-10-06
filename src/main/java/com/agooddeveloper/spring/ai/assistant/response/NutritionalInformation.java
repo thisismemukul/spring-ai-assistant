@@ -1,10 +1,5 @@
 package com.agooddeveloper.spring.ai.assistant.response;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 public record NutritionalInformation(
         String calories,
         String totalFat,

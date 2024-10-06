@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 
 import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.*;
 
+
 public class AiAssistantUtils {
 
     public static Mono<String> validateChatInputs(String prompt, String model) {
@@ -61,7 +62,7 @@ public class AiAssistantUtils {
                 DietGoal: {dietGoal}
                 FoodPreferences: {foodPreferences}
                 Dietary Restrictions: {dietaryRestrictions}
-                For the following Meal Types:
+                For the following Meal Types: {mealTypes}
                 - Breakfast
                 - Mid-Morning Snack
                 - Lunch

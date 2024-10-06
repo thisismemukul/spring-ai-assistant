@@ -1,5 +1,6 @@
 package com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl;
 
+import com.agooddeveloper.spring.ai.assistant.response.diet.MealTypes;
 import com.agooddeveloper.spring.ai.assistant.service.trainerservice.ITrainerService;
 import com.agooddeveloper.spring.ai.assistant.utils.LoggerUtil;
 import org.springframework.ai.chat.model.ChatModel;
@@ -73,6 +74,7 @@ public class DietPlannerService implements ITrainerService {
                 templateModel.put("dietGoal", dietGoal);
                 templateModel.put("foodPreferences", foodPreferences);
                 templateModel.put("dietaryRestrictions", dietaryRestrictions);
+                templateModel.put("mealTypes", MealTypes.class);
                 templateModel.put("format", format);
 
                 PromptTemplate promptTemplate = new PromptTemplate(getDietTemplate(), templateModel);
