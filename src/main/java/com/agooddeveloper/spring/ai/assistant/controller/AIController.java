@@ -1,6 +1,7 @@
 package com.agooddeveloper.spring.ai.assistant.controller;
 
 import com.agooddeveloper.spring.ai.assistant.response.ApiResponse;
+import com.agooddeveloper.spring.ai.assistant.response.diet.DietPlanResponse;
 import com.agooddeveloper.spring.ai.assistant.response.recipe.RecipeResponse;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.impl.ChatService;
 import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.RecipeService;
@@ -42,8 +43,18 @@ public class AIController {
                                                                           @RequestParam(defaultValue = "any") String cuisine,
                                                                           @RequestParam(defaultValue = "") String dietaryRestrictions,
                                                                           @RequestParam String model) {
-        return recipeService.createPlan(ingredients, cuisine, dietaryRestrictions, model)
+        return recipeService.createPlan(ingredients, cuisine, dietaryRestrictions, model,RecipeResponse.class)
                 .flatMap(result -> successResponse("Recipe Created successfully", HttpStatus.OK, result))
+                .onErrorResume(this::errorResponse);
+    }
+
+    @GetMapping(DIET_PLAN)
+    public Mono<ResponseEntity<ApiResponse<DietPlanResponse>>> createDietPlan(@RequestParam String dietGoal,
+                                                                              @RequestParam(defaultValue = "any") String foodPreferences,
+                                                                              @RequestParam(defaultValue = "") String dietaryRestrictions,
+                                                                              @RequestParam String model) {
+        return recipeService.createPlan(dietGoal, foodPreferences, dietaryRestrictions, model,DietPlanResponse.class)
+                .flatMap(result -> successResponse("Diet Plan Created successfully", HttpStatus.OK, result))
                 .onErrorResume(this::errorResponse);
     }
 

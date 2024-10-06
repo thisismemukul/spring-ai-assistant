@@ -1,4 +1,4 @@
-package com.agooddeveloper.spring.ai.assistant.response.recipe;
+package com.agooddeveloper.spring.ai.assistant.response.diet;
 
 import com.agooddeveloper.spring.ai.assistant.response.NutritionalInformation;
 import lombok.Getter;
@@ -8,9 +8,11 @@ import java.util.List;
 
 @Getter
 @Setter
-public record RecipeResponse(
+public record MealSuggestion(
         String title,
         List<String> ingredients,
-        List<String> instructions,
-        NutritionalInformation nutritionalInformation
-) {}
+        String portionSize,
+        NutritionalInformation nutritionalInformation,
+        List<String> instructions
+) {
+}

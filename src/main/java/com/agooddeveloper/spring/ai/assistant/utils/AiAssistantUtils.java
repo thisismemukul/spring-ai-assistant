@@ -17,8 +17,8 @@ public class AiAssistantUtils {
         return validateModel(model);
     }
 
-    public static Mono<String> validateRecipeInputs(String ingredients, String cuisine, String dietaryRestrictions, String model) {
-        if (StringUtils.isBlank(ingredients) || StringUtils.isBlank(cuisine) || StringUtils.isBlank(dietaryRestrictions)) {
+    public static Mono<String> validateChatInputs(String param1, String param2, String param3, String model) {
+        if (StringUtils.isBlank(param1) || StringUtils.isBlank(param2) || StringUtils.isBlank(param3)) {
             throw new ValidationException(
                     new DefaultBaseError<>(
                             RECIPE_INPUT_IS_INVALID.code(),
@@ -52,6 +52,21 @@ public class AiAssistantUtils {
                 Ingredients: {ingredients}
                 Cuisine: {cuisine}
                 Dietary Restrictions: {dietaryRestrictions}
+                {format}
+                """;
+    }
+    public static String getDietTemplate() {
+        return """
+                Create a diet plan based on the following details:
+                DietGoal: {dietGoal}
+                FoodPreferences: {foodPreferences}
+                Dietary Restrictions: {dietaryRestrictions}
+                For the following Meal Types:
+                - Breakfast
+                - Mid-Morning Snack
+                - Lunch
+                - Afternoon Snack
+                - Dinner
                 {format}
                 """;
     }
