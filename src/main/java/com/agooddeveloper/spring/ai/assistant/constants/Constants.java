@@ -39,8 +39,8 @@ public class Constants {
     public static final String MODEL_IS_INVALID_MESSAGE = "The specified model is not supported.";
     public static final String MODEL_IS_INVALID_USER_MESSAGE = "Uh-oh! Looks like you forgot to specify either 'openai' or 'ollama' as the model. 🗣️";
 
-    public static final String RECIPE_INPUT_IS_INVALID_MESSAGE = "Invalid Recipe input: ingredients, cuisine, or dietary restrictions are empty.";
-    public static final String RECIPE_INPUT_IS_INVALID_USER_MESSAGE = "Uh-oh! Looks like you forgot what are the ingredients, cuisine, or dietary restrictions. 👩‍🍳🔪";
+    public static final String INPUT_IS_INVALID_MESSAGE = "Invalid Input: parameters are empty.";
+    public static final String INPUT_IS_INVALID_USER_MESSAGE = "Uh-oh! Looks like you forgot what are the parameters. 👩‍🍳🔪";
 
     //500
     public static final String NULL_POINTER_EXCEPTION_MESSAGE = "A null pointer exception occurred: ";

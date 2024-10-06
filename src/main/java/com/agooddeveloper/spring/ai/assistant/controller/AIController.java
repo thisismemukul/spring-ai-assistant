@@ -2,9 +2,11 @@ package com.agooddeveloper.spring.ai.assistant.controller;
 
 import com.agooddeveloper.spring.ai.assistant.response.ApiResponse;
 import com.agooddeveloper.spring.ai.assistant.response.diet.DietPlanResponse;
+import com.agooddeveloper.spring.ai.assistant.response.exercise.ExercisePlanResponse;
 import com.agooddeveloper.spring.ai.assistant.response.recipe.RecipeResponse;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.impl.ChatService;
 import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.DietPlannerService;
+import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.ExercisePlannerService;
 import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,14 +26,17 @@ public class AIController {
     private final ChatService chatService;
     private final RecipeService recipeService;
     private final DietPlannerService dietPlannerService;
+    private final ExercisePlannerService exercisePlannerService;
 
     @Autowired
     public AIController(ChatService chatService,
                         RecipeService recipeService,
-                        DietPlannerService dietPlannerService) {
+                        DietPlannerService dietPlannerService,
+                        ExercisePlannerService exercisePlannerService) {
         this.chatService = chatService;
         this.recipeService = recipeService;
         this.dietPlannerService = dietPlannerService;
+        this.exercisePlannerService = exercisePlannerService;
     }
 
 
@@ -60,6 +65,17 @@ public class AIController {
                                                                               @RequestParam String model) {
         return dietPlannerService.createPlan(dietGoal, foodPreferences, dietaryRestrictions, model,DietPlanResponse.class)
                 .flatMap(result -> successResponse("Diet Plan Created successfully", HttpStatus.OK, result))
+                .onErrorResume(this::errorResponse);
+    }
+
+
+    @GetMapping(EXERCISE_PLAN)
+    public Mono<ResponseEntity<ApiResponse<ExercisePlanResponse>>> createExercisePlan(@RequestParam String fitnessGoal,
+                                                                                      @RequestParam(defaultValue = "any") String exercisePreference,
+                                                                                      @RequestParam(defaultValue = "") String equipment,
+                                                                                      @RequestParam String model) {
+        return exercisePlannerService.createPlan(fitnessGoal, exercisePreference, equipment, model,ExercisePlanResponse.class)
+                .flatMap(result -> successResponse("Exercise Plan Created successfully", HttpStatus.OK, result))
                 .onErrorResume(this::errorResponse);
     }
 

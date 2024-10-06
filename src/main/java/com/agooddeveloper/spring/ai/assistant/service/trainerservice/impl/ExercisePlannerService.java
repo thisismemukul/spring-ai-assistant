@@ -1,6 +1,5 @@
 package com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl;
 
-import com.agooddeveloper.spring.ai.assistant.response.diet.MealTypes;
 import com.agooddeveloper.spring.ai.assistant.service.trainerservice.ITrainerService;
 import com.agooddeveloper.spring.ai.assistant.utils.LoggerUtil;
 import org.springframework.ai.chat.model.ChatModel;
@@ -23,37 +22,36 @@ import static com.agooddeveloper.spring.ai.assistant.enums.ResponseCode.MODEL_IS
 import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.*;
 
 @Service
-public class DietPlannerService implements ITrainerService {
+public class ExercisePlannerService implements ITrainerService {
 
     private final ChatModel ollamaChatModel;
     private final ChatModel openAiChatModel;
 
     @Autowired
-    public DietPlannerService(@Qualifier("ollamaChatModel") ChatModel ollamaChatModel,
-                              @Qualifier("openAiChatModel") ChatModel openAiChatModel) {
+    public ExercisePlannerService(@Qualifier("ollamaChatModel") ChatModel ollamaChatModel,
+                                  @Qualifier("openAiChatModel") ChatModel openAiChatModel) {
         this.ollamaChatModel = ollamaChatModel;
         this.openAiChatModel = openAiChatModel;
     }
 
-
     @Override
-    public <T> Mono<T> createPlan(String dietGoal, String foodPreferences, String dietaryRestrictions, String model, Class<T> responseType) {
-        return validateChatInputs(dietGoal, foodPreferences, dietaryRestrictions, model)
+    public <T> Mono<T> createPlan(String fitnessGoal, String exercisePreference, String equipment, String model, Class<T> responseType) {
+        return validateChatInputs(fitnessGoal, exercisePreference, equipment, model)
                 .flatMap(validModel -> {
                     switch (validModel) {
                         case OPEN_AI -> {
-                            return createDietPlan(dietGoal, foodPreferences, dietaryRestrictions, openAiChatModel, responseType)
+                            return createExercisePlan(fitnessGoal, exercisePreference, equipment, openAiChatModel, responseType)
                                     .timeout(OPEN_AI_TIMEOUT)
                                     .onErrorResume(TimeoutException.class, e -> {
-                                        LoggerUtil.logFailure("Timeout occurred while processing createDietPlan OpenAI chat prompt", e);
+                                        LoggerUtil.logFailure("Timeout occurred while processing createExercisePlan OpenAI chat prompt", e);
                                         return Mono.error(new TimeoutException(e.getMessage()));
                                     });
                         }
                         case O_LLAMA_AI -> {
-                            return createDietPlan(dietGoal, foodPreferences, dietaryRestrictions, ollamaChatModel, responseType)
+                            return createExercisePlan(fitnessGoal, exercisePreference, equipment, ollamaChatModel, responseType)
                                     .timeout(O_LLAMA_AI_TIMEOUT)
                                     .onErrorResume(TimeoutException.class, e -> {
-                                        LoggerUtil.logFailure("Timeout occurred while processing createDietPlan OLlama chat prompt", e);
+                                        LoggerUtil.logFailure("Timeout occurred while processing createExercisePlan OLlama chat prompt", e);
                                         return Mono.error(new TimeoutException(e.getMessage()));
                                     });
                         }
@@ -64,26 +62,25 @@ public class DietPlannerService implements ITrainerService {
                 });
     }
 
-    private <T> Mono<T> createDietPlan(String dietGoal, String foodPreferences, String dietaryRestrictions, ChatModel chatModel, Class<T> responseType) {
+    private <T> Mono<T> createExercisePlan(String fitnessGoal, String exercisePreference, String equipment, ChatModel chatModel, Class<T> responseType) {
         return Mono.fromCallable(() -> {
             try {
                 BeanOutputConverter<T> outputConverter = new BeanOutputConverter<>(responseType);
                 String format = outputConverter.getFormat();
 
                 Map<String, Object> templateModel = new HashMap<>();
-                templateModel.put("dietGoal", dietGoal);
-                templateModel.put("foodPreferences", foodPreferences);
-                templateModel.put("dietaryRestrictions", dietaryRestrictions);
-                templateModel.put("mealTypes", MealTypes.class);
+                templateModel.put("fitnessGoal", fitnessGoal);
+                templateModel.put("exercisePreference", exercisePreference);
+                templateModel.put("equipment", equipment);
                 templateModel.put("format", format);
 
-                PromptTemplate promptTemplate = new PromptTemplate(getDietTemplate(), templateModel);
+                PromptTemplate promptTemplate = new PromptTemplate(getExerciseTemplate(), templateModel);
                 Prompt prompt = promptTemplate.create();
                 Generation generation = chatModel.call(prompt).getResult();
-                LoggerUtil.logInfo("Response received for createDietPlan.");
+                LoggerUtil.logInfo("Response received for createExercisePlan.");
                 return outputConverter.convert(generation.getOutput().getContent());
             } catch (Exception e) {
-                LoggerUtil.logFailure("Error occurred while processing create diet plan prompt: '{}'", chatModel, e);
+                LoggerUtil.logFailure("Error occurred while processing create exercise plan prompt: '{}'", chatModel, e);
                 throw new RuntimeException(e.getMessage(), e);
             }
         }).subscribeOn(Schedulers.boundedElastic());

@@ -22,9 +22,9 @@ public class AiAssistantUtils {
         if (StringUtils.isBlank(param1) || StringUtils.isBlank(param2) || StringUtils.isBlank(param3)) {
             throw new ValidationException(
                     new DefaultBaseError<>(
-                            RECIPE_INPUT_IS_INVALID.code(),
-                            RECIPE_INPUT_IS_INVALID.message(),
-                            RECIPE_INPUT_IS_INVALID.userMessage(),
+                            INPUT_IS_INVALID.code(),
+                            INPUT_IS_INVALID.message(),
+                            INPUT_IS_INVALID.userMessage(),
                             true)
             );
         }
@@ -68,6 +68,15 @@ public class AiAssistantUtils {
                 - Lunch
                 - Afternoon Snack
                 - Dinner
+                {format}
+                """;
+    }
+    public static String getExerciseTemplate() {
+        return """
+                Create a exercise plan based on the following details:
+                FitnessGoal: {fitnessGoal}
+                ExercisePreference: {exercisePreference}
+                Equipment: {equipment}
                 {format}
                 """;
     }
