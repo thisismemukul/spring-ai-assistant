@@ -4,6 +4,7 @@ import com.agooddeveloper.spring.ai.assistant.response.ApiResponse;
 import com.agooddeveloper.spring.ai.assistant.response.diet.DietPlanResponse;
 import com.agooddeveloper.spring.ai.assistant.response.recipe.RecipeResponse;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.impl.ChatService;
+import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.DietPlannerService;
 import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,15 @@ public class AIController {
 
     private final ChatService chatService;
     private final RecipeService recipeService;
+    private final DietPlannerService dietPlannerService;
 
     @Autowired
-    public AIController(ChatService chatService, RecipeService recipeService) {
+    public AIController(ChatService chatService,
+                        RecipeService recipeService,
+                        DietPlannerService dietPlannerService) {
         this.chatService = chatService;
         this.recipeService = recipeService;
+        this.dietPlannerService = dietPlannerService;
     }
 
 
@@ -53,7 +58,7 @@ public class AIController {
                                                                               @RequestParam(defaultValue = "any") String foodPreferences,
                                                                               @RequestParam(defaultValue = "") String dietaryRestrictions,
                                                                               @RequestParam String model) {
-        return recipeService.createPlan(dietGoal, foodPreferences, dietaryRestrictions, model,DietPlanResponse.class)
+        return dietPlannerService.createPlan(dietGoal, foodPreferences, dietaryRestrictions, model,DietPlanResponse.class)
                 .flatMap(result -> successResponse("Diet Plan Created successfully", HttpStatus.OK, result))
                 .onErrorResume(this::errorResponse);
     }
