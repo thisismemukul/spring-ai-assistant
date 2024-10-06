@@ -2,6 +2,7 @@ package com.agooddeveloper.spring.ai.assistant.service.chatservice.impl;
 
 import com.agooddeveloper.spring.ai.assistant.exceptions.ValidationException;
 import com.agooddeveloper.spring.ai.assistant.service.chatservice.IAIService;
+import com.agooddeveloper.spring.ai.assistant.utils.LoggerUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatModel;
@@ -46,7 +47,7 @@ public class ChatService implements IAIService {
                             return openAIChat(prompt, openAiChatModel)
                                     .timeout(OPEN_AI_TIMEOUT)
                                     .onErrorResume(TimeoutException.class, e -> {
-                                        log.error("Timeout occurred while processing openai chat prompt: '{}'", prompt, e);
+                                        LoggerUtil.logFailure("Timeout occurred while processing OpenAI chat prompt", e);
                                         return Mono.error(new TimeoutException(e.getMessage()));
                                     });
                         }
@@ -54,7 +55,7 @@ public class ChatService implements IAIService {
                             return ollamaChat(prompt, ollamaChatModel)
                                     .timeout(O_LLAMA_AI_TIMEOUT)
                                     .onErrorResume(TimeoutException.class, e -> {
-                                        log.error("Timeout occurred while processing ollama chat prompt: '{}'", prompt, e);
+                                        LoggerUtil.logFailure("Timeout occurred while processing OLlama chat prompt", e);
                                         return Mono.error(new TimeoutException(e.getMessage()));
                                     });
                         }
@@ -77,10 +78,10 @@ public class ChatService implements IAIService {
                                         .withTemperature(0.4F)
                                         .build()
                         ));
-                log.info("Response received for openAIChat");
+                LoggerUtil.logInfo("Response received for openAIChat with prompt: '{}'", prompt);
                 return response.getResult().getOutput().getContent();
             } catch (Exception e) {
-                log.error("Error occurred while processing chat prompt: '{}'", prompt, e);
+                LoggerUtil.logFailure("Error occurred while processing openAIChat prompt: '{}'", prompt, e);
                 throw new RuntimeException(e.getMessage(), e);
             }
         }).subscribeOn(Schedulers.boundedElastic()); // Prevent blocking
@@ -98,10 +99,10 @@ public class ChatService implements IAIService {
                                         .withTemperature(0.4F)
                                         .build()
                         ));
-                log.info("Response received for ollamaChat");
+                LoggerUtil.logInfo("Response received for ollamaChat");
                 return response.getResult().getOutput().getContent();
             } catch (Exception e) {
-                log.error("Error occurred while processing chat prompt: '{}'", prompt, e);
+                LoggerUtil.logFailure("Error occurred while processing ollamaChat prompt: '{}'", prompt, e);
                 throw new RuntimeException(e.getMessage(), e);
             }
         }).subscribeOn(Schedulers.boundedElastic()); // Prevent blocking

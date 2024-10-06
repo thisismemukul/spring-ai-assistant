@@ -46,4 +46,13 @@ public class AiAssistantUtils {
                 )
         );
     }
+    public static String getRecipeTemplate() {
+        return """
+                Create a recipe based on the following details:
+                Ingredients: {ingredients}
+                Cuisine: {cuisine}
+                Dietary Restrictions: {dietaryRestrictions}
+                {format}
+                """;
+    }
 }
