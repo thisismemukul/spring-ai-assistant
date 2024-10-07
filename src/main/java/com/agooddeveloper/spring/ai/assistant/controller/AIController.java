@@ -8,6 +8,7 @@ import com.agooddeveloper.spring.ai.assistant.service.chatservice.impl.ChatServi
 import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.DietPlannerService;
 import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.ExercisePlannerService;
 import com.agooddeveloper.spring.ai.assistant.service.trainerservice.impl.RecipeService;
+import com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import static com.agooddeveloper.spring.ai.assistant.constants.RESTUriConstants.*;
+import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.successResponse;
 
 @RestController
 @RequestMapping(value = ASK_AI)
@@ -45,7 +47,7 @@ public class AIController {
     public Mono<ResponseEntity<ApiResponse<String>>> getChatResponse(@RequestParam String prompt, @RequestParam String model) {
         return chatService.getResponse(prompt, model)
                 .flatMap(result -> successResponse("Created successfully", HttpStatus.OK, result))
-                .onErrorResume(this::errorResponse);
+                .onErrorResume(AiAssistantUtils::errorResponse);
     }
 
     @GetMapping(CREATE_RECIPE)
@@ -55,7 +57,7 @@ public class AIController {
                                                                           @RequestParam String model) {
         return recipeService.createPlan(ingredients, cuisine, dietaryRestrictions, model,RecipeResponse.class)
                 .flatMap(result -> successResponse("Recipe Created successfully", HttpStatus.OK, result))
-                .onErrorResume(this::errorResponse);
+                .onErrorResume(AiAssistantUtils::errorResponse);
     }
 
     @GetMapping(DIET_PLAN)
@@ -65,7 +67,7 @@ public class AIController {
                                                                               @RequestParam String model) {
         return dietPlannerService.createPlan(dietGoal, foodPreferences, dietaryRestrictions, model,DietPlanResponse.class)
                 .flatMap(result -> successResponse("Diet Plan Created successfully", HttpStatus.OK, result))
-                .onErrorResume(this::errorResponse);
+                .onErrorResume(AiAssistantUtils::errorResponse);
     }
 
 
@@ -76,15 +78,8 @@ public class AIController {
                                                                                       @RequestParam String model) {
         return exercisePlannerService.createPlan(fitnessGoal, exercisePreference, equipment, model,ExercisePlanResponse.class)
                 .flatMap(result -> successResponse("Exercise Plan Created successfully", HttpStatus.OK, result))
-                .onErrorResume(this::errorResponse);
+                .onErrorResume(AiAssistantUtils::errorResponse);
     }
 
-    private <T> Mono<ResponseEntity<ApiResponse<T>>> successResponse(String message, HttpStatus status, T data) {
-        return Mono.just(ResponseEntity.ok(new ApiResponse<>(message, status.value(), data)));
-    }
-
-    private <T> Mono<ResponseEntity<ApiResponse<T>>> errorResponse(Throwable e) {
-        return Mono.error(e);
-    }
 
 }
