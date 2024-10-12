@@ -1,5 +1,6 @@
 package com.agooddeveloper.spring.ai.assistant.controller;
 
+import com.agooddeveloper.spring.ai.assistant.annotations.Validated;
 import com.agooddeveloper.spring.ai.assistant.response.ApiResponse;
 import com.agooddeveloper.spring.ai.assistant.response.diet.DietPlanResponse;
 import com.agooddeveloper.spring.ai.assistant.response.exercise.ExercisePlanResponse;
@@ -8,10 +9,12 @@ import com.agooddeveloper.spring.ai.assistant.response.image.TitleImage;
 import com.agooddeveloper.spring.ai.assistant.response.recipe.RecipeResponse;
 import com.agooddeveloper.spring.ai.assistant.service.ImageService;
 import com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils;
+import com.agooddeveloper.spring.ai.assistant.validators.image.DietPlanRequestValidator;
+import com.agooddeveloper.spring.ai.assistant.validators.image.ExerciseRequestValidator;
+import com.agooddeveloper.spring.ai.assistant.validators.image.RecipeRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +39,7 @@ public class AiImageController {
     }
 
     @PostMapping(RECIPE_IMAGES)
+    @Validated(validatorClasses = {RecipeRequestValidator.class})
     public Mono<ResponseEntity<ApiResponse<AiImageResponse>>> generateRecipeImages(@RequestBody RecipeResponse recipeResponse) {
         CompletableFuture<AiImageResponse> imageResponseFuture = imageService.generateRecipeImages(recipeResponse);
         return Mono.fromFuture(imageResponseFuture)
@@ -44,6 +48,7 @@ public class AiImageController {
     }
 
     @PostMapping(DIET_IMAGES)
+    @Validated(validatorClasses = {DietPlanRequestValidator.class})
     public Mono<ResponseEntity<ApiResponse<List<TitleImage>>>> generateDietImages(@RequestBody DietPlanResponse dietPlanResponse) {
         CompletableFuture<List<TitleImage>> imageResponseFuture = imageService.generateDietImages(dietPlanResponse);
         return Mono.fromFuture(imageResponseFuture)
@@ -52,6 +57,7 @@ public class AiImageController {
     }
 
     @PostMapping(EXERCISE_IMAGES)
+    @Validated(validatorClasses = {ExerciseRequestValidator.class})
     public Mono<ResponseEntity<ApiResponse<AiImageResponse>>> generateExerciseImages(@RequestBody ExercisePlanResponse exercisePlanResponse) {
         CompletableFuture<AiImageResponse> imageResponseFuture = imageService.generateExerciseImages(exercisePlanResponse);
         return Mono.fromFuture(imageResponseFuture)

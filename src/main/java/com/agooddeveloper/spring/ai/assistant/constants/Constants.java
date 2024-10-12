@@ -42,6 +42,15 @@ public class Constants {
     public static final String INPUT_IS_INVALID_MESSAGE = "Invalid Input: parameters are empty.";
     public static final String INPUT_IS_INVALID_USER_MESSAGE = "Uh-oh! Looks like you forgot what are the parameters. 👩‍🍳🔪";
 
+    public static final String RECIPE_INPUT_IS_INVALID_MESSAGE = "Invalid Input: Recipe is not valid.";
+    public static final String RECIPE_INPUT_IS_INVALID_USER_MESSAGE = "Hold up! It looks like your recipe has gone on vacation. Time to reel it back in! 🌴🥳";
+
+    public static final String DIET_INPUT_IS_INVALID_MESSAGE = "Invalid Input: Diet goal is not valid.";
+    public static final String DIET_INPUT_IS_INVALID_USER_MESSAGE = "Hold up! It looks like your diet goal has gone on vacation. Time to reel it back in! 🌴🥳";
+
+    public static final String EXERCISE_INPUT_IS_INVALID_MESSAGE = "Invalid Input: Exercise plan is not valid.";
+    public static final String EXERCISE_INPUT_IS_INVALID_USER_MESSAGE = "Hold up! It looks like your exercise plan has gone on vacation. Time to reel it back in! 🌴🥳";
+
     //500
     public static final String NULL_POINTER_EXCEPTION_MESSAGE = "A null pointer exception occurred: ";
     public static final String NULL_POINTER_EXCEPTION_USER_MESSAGE = "Yikes! Something’s missing! 😱 The bugs must be having a party. 🐛🍕";
