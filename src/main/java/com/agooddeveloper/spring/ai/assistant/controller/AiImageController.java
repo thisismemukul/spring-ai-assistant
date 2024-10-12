@@ -3,6 +3,7 @@ package com.agooddeveloper.spring.ai.assistant.controller;
 import com.agooddeveloper.spring.ai.assistant.response.ApiResponse;
 import com.agooddeveloper.spring.ai.assistant.response.diet.DietPlanResponse;
 import com.agooddeveloper.spring.ai.assistant.response.image.AiImageResponse;
+import com.agooddeveloper.spring.ai.assistant.response.image.TitleImage;
 import com.agooddeveloper.spring.ai.assistant.response.recipe.RecipeResponse;
 import com.agooddeveloper.spring.ai.assistant.service.ImageService;
 import com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static com.agooddeveloper.spring.ai.assistant.constants.RESTUriConstants.*;
@@ -32,10 +34,18 @@ public class AiImageController {
     }
 
     @PostMapping(RECIPE_IMAGES)
-    public Mono<ResponseEntity<ApiResponse<AiImageResponse>>> createRecipeImage(@RequestBody RecipeResponse recipeResponse) {
-        CompletableFuture<AiImageResponse> imageResponseFuture = imageService.generateRecipeImage(recipeResponse);
+    public Mono<ResponseEntity<ApiResponse<AiImageResponse>>> generateRecipeImages(@RequestBody RecipeResponse recipeResponse) {
+        CompletableFuture<AiImageResponse> imageResponseFuture = imageService.generateRecipeImages(recipeResponse);
         return Mono.fromFuture(imageResponseFuture)
                 .flatMap(result -> successResponse("Recipe Images Created successfully", HttpStatus.OK, result))
+                .onErrorResume(AiAssistantUtils::errorResponse);
+    }
+
+    @PostMapping(DIET_IMAGES)
+    public Mono<ResponseEntity<ApiResponse<List<TitleImage>>>> generateDietImages(@RequestBody DietPlanResponse dietPlanResponse) {
+        CompletableFuture<List<TitleImage>> imageResponseFuture = imageService.generateDietImages(dietPlanResponse);
+        return Mono.fromFuture(imageResponseFuture)
+                .flatMap(result -> successResponse("Diet Images Created successfully", HttpStatus.OK, result))
                 .onErrorResume(AiAssistantUtils::errorResponse);
     }
 }

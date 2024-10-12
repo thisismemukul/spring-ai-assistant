@@ -1,10 +1,13 @@
 package com.agooddeveloper.spring.ai.assistant.service;
 
+import com.agooddeveloper.spring.ai.assistant.response.diet.DailyMeal;
+import com.agooddeveloper.spring.ai.assistant.response.diet.DietPlanResponse;
 import com.agooddeveloper.spring.ai.assistant.response.image.AiImageResponse;
 import com.agooddeveloper.spring.ai.assistant.response.image.IngredientImage;
 import com.agooddeveloper.spring.ai.assistant.response.image.InstructionImage;
 import com.agooddeveloper.spring.ai.assistant.response.image.TitleImage;
 import com.agooddeveloper.spring.ai.assistant.response.recipe.RecipeResponse;
+import com.agooddeveloper.spring.ai.assistant.service.imageservice.IImageService;
 import com.agooddeveloper.spring.ai.assistant.utils.LoggerUtil;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
@@ -23,7 +26,7 @@ import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.getD
 import static com.agooddeveloper.spring.ai.assistant.utils.AiAssistantUtils.limitUpto;
 
 @Service
-public class ImageService {
+public class ImageService implements IImageService {
 
     private final StabilityAiImageModel stabilityAiImageModel;
 
@@ -37,7 +40,7 @@ public class ImageService {
     private static final String STABILITY_AI_MODEL = "stable-diffusion-v1-6";
 
     @Async
-    public CompletableFuture<AiImageResponse> generateRecipeImage(RecipeResponse recipeResponse) {
+    public CompletableFuture<AiImageResponse> generateRecipeImages(RecipeResponse recipeResponse) {
         LoggerUtil.logInfo("Generating images for recipe Title {} Ingredients {} Instructions " +
                 recipeResponse.title(), recipeResponse.ingredients(), recipeResponse.instructions());
 
@@ -58,9 +61,41 @@ public class ImageService {
                         instructionImagesFuture.join()
                 ))
                 .exceptionally(ex -> {
-                    throw new RuntimeException("Error generating recipe image: " + ex.getMessage(), ex);
+                    throw new RuntimeException("Error generating recipe images: " + ex.getMessage(), ex);
 //                    throw new ImageGenerationException("Error generating recipe image: " + ex.getMessage(), ex);
                 });
+    }
+
+    @Async
+    public CompletableFuture<List<TitleImage>> generateDietImages(DietPlanResponse dietPlanResponse) {
+        dietPlanResponse.getDailyMealPlan().stream()
+                .map(DailyMeal::getMealSuggestions)
+                .forEach(mealSuggestion ->
+                        LoggerUtil.logInfo("generateDietImages | Diet Meal Title: {}, Ingredients: {}, Instructions: {}",
+                                mealSuggestion.getTitle(),
+                                mealSuggestion.getIngredients(),
+                                mealSuggestion.getInstructions())
+                );
+
+        List<CompletableFuture<TitleImage>> titleImageFutures = dietPlanResponse.getDailyMealPlan().stream()
+                .map(dailyMeal -> {
+                    String title = dailyMeal.getMealSuggestions().getTitle();
+                    LoggerUtil.logInfo("Generating image for meal title: {}", title);
+                    return generateTitleImage(title);
+                }).toList();
+
+        return CompletableFuture.allOf(titleImageFutures.toArray(new CompletableFuture[0]))
+                .thenApply(v -> titleImageFutures.stream()
+                        .map(CompletableFuture::join)
+                        .collect(Collectors.toList())
+                )
+                .exceptionally(ex -> {
+                    LoggerUtil.logFailure("Error generating diet meal title images: {}", ex.getMessage());
+                    return titleImageFutures.stream()
+                            .map(future -> new TitleImage("Error generating image", getDefaultImage()))
+                            .collect(Collectors.toList());
+                });
+        //  throw new ImageGenerationException("Error generating recipe image: " + ex.getMessage(), ex);
     }
 
     private CompletableFuture<TitleImage> generateTitleImage(String title) {
