@@ -12,4 +12,5 @@ public class AiImageResponse {
     private TitleImage titleImage;
     private List<IngredientImage> ingredientsImages;
     private List<InstructionImage> instructionsImages;
+    private List<ExerciseImage> exerciseImages;
 }

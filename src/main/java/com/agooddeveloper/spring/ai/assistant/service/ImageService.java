@@ -2,10 +2,10 @@ package com.agooddeveloper.spring.ai.assistant.service;
 
 import com.agooddeveloper.spring.ai.assistant.response.diet.DailyMeal;
 import com.agooddeveloper.spring.ai.assistant.response.diet.DietPlanResponse;
-import com.agooddeveloper.spring.ai.assistant.response.image.AiImageResponse;
-import com.agooddeveloper.spring.ai.assistant.response.image.IngredientImage;
-import com.agooddeveloper.spring.ai.assistant.response.image.InstructionImage;
-import com.agooddeveloper.spring.ai.assistant.response.image.TitleImage;
+import com.agooddeveloper.spring.ai.assistant.response.exercise.DailyWorkoutPlan;
+import com.agooddeveloper.spring.ai.assistant.response.exercise.ExercisePlanResponse;
+import com.agooddeveloper.spring.ai.assistant.response.exercise.Exercises;
+import com.agooddeveloper.spring.ai.assistant.response.image.*;
 import com.agooddeveloper.spring.ai.assistant.response.recipe.RecipeResponse;
 import com.agooddeveloper.spring.ai.assistant.service.imageservice.IImageService;
 import com.agooddeveloper.spring.ai.assistant.utils.LoggerUtil;
@@ -58,7 +58,8 @@ public class ImageService implements IImageService {
                 .thenApply(v -> new AiImageResponse(
                         titleImageFuture.join(),
                         ingredientImagesFuture.join(),
-                        instructionImagesFuture.join()
+                        instructionImagesFuture.join(),
+                        null
                 ))
                 .exceptionally(ex -> {
                     throw new RuntimeException("Error generating recipe images: " + ex.getMessage(), ex);
@@ -71,10 +72,8 @@ public class ImageService implements IImageService {
         dietPlanResponse.getDailyMealPlan().stream()
                 .map(DailyMeal::getMealSuggestions)
                 .forEach(mealSuggestion ->
-                        LoggerUtil.logInfo("generateDietImages | Diet Meal Title: {}, Ingredients: {}, Instructions: {}",
-                                mealSuggestion.getTitle(),
-                                mealSuggestion.getIngredients(),
-                                mealSuggestion.getInstructions())
+                        LoggerUtil.logInfo("generateDietImages | Diet Meal Title: {}",
+                                mealSuggestion.getTitle())
                 );
 
         List<CompletableFuture<TitleImage>> titleImageFutures = dietPlanResponse.getDailyMealPlan().stream()
@@ -96,6 +95,54 @@ public class ImageService implements IImageService {
                             .collect(Collectors.toList());
                 });
         //  throw new ImageGenerationException("Error generating recipe image: " + ex.getMessage(), ex);
+    }
+
+    @Async
+    public CompletableFuture<AiImageResponse> generateExerciseImages(ExercisePlanResponse exercisePlanResponse) {
+        LoggerUtil.logInfo("Generating images for Fitness Goal: {}", exercisePlanResponse.getFitnessGoal());
+        exercisePlanResponse.getDailyWorkoutPlan().forEach(dailyWorkoutPlan ->
+                dailyWorkoutPlan.getExercise().forEach(exercise ->
+                        LoggerUtil.logInfo("Exercise: Title: {}",
+                                exercise.getTitle())
+                )
+        );
+
+        CompletableFuture<TitleImage> titleImageFuture =
+                generateTitleImage(exercisePlanResponse.getFitnessGoal());
+
+        List<CompletableFuture<ExerciseImage>> exerciseImageFutures = exercisePlanResponse.getDailyWorkoutPlan().stream()
+                .flatMap(dailyWorkoutPlan -> dailyWorkoutPlan.getExercise().stream())
+                .map(exercise -> {
+                    LoggerUtil.logInfo("Generating image for exercise: {}", exercise.getTitle());
+                    return generateExerciseImage(exercise.getTitle());
+                }).toList();
+
+        return CompletableFuture.allOf(titleImageFuture, CompletableFuture.allOf(exerciseImageFutures.toArray(new CompletableFuture[0])))
+                .thenApply(v -> new AiImageResponse(
+                        titleImageFuture.join(),
+                        null,
+                        null,
+                        exerciseImageFutures.stream()
+                                .map(CompletableFuture::join)
+                                .collect(Collectors.toList())
+                ))
+                .exceptionally(ex -> {
+                    LoggerUtil.logFailure("Error generating exercise images: {}", ex.getMessage());
+                    return new AiImageResponse(
+                            new TitleImage("Error generating fitness goal image", getDefaultImage()),
+                            null,
+                            null,
+                            exerciseImageFutures.stream()
+                                    .map(future -> new ExerciseImage("Error generating image", getDefaultImage()))
+                                    .collect(Collectors.toList())
+                    );
+                });
+    }
+
+    private CompletableFuture<ExerciseImage> generateExerciseImage(String exerciseTitle) {
+        return generateImage(exerciseTitle)
+                .thenApply(imageData -> new ExerciseImage(exerciseTitle, imageData))
+                .exceptionally(ex -> new ExerciseImage(exerciseTitle, getDefaultImage()));
     }
 
     private CompletableFuture<TitleImage> generateTitleImage(String title) {

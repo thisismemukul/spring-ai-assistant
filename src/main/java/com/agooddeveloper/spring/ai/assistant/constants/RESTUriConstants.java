@@ -10,4 +10,5 @@ public class RESTUriConstants {
 
     public static final String RECIPE_IMAGES = "/generate/images/recipe";
     public static final String DIET_IMAGES = "/generate/images/diet";
+    public static final String EXERCISE_IMAGES = "/generate/images/exercise";
 }
