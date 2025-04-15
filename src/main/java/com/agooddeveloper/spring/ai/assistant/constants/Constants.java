@@ -7,12 +7,12 @@ public class Constants {
 
     public static final String OPEN_AI = "openai";
     public static final String O_LLAMA_AI = "ollama";
-    public static final String AI_MODEL = "mixtral-8x7b-32768";
+    public static final String AI_MODEL = "llama-3.3-70b-versatile";
 
     // Health Check
     public static final String AI_HEALTH_CHECK = """
         Welcome to AI! 🚀✨
-        Everything is running smoothly...for now. But don’t worry, the bugs 🐛🐜 are on vacation! 😎
+        Everything is running smoothly...for now. But don't worry, the bugs 🐛🐜 are on vacation! 😎
         Ready to create magic with AI? 🎨💡 Let's go before they come back! ⚡💥
         """;
 
@@ -26,7 +26,7 @@ public class Constants {
     public static final String FAILED_MESSAGE = "FAILED";
     public static final String FAILED_USER_MESSAGE = "Oops! Something went wrong. Let's try again! 🙈";
 
-    public static final Duration OPEN_AI_TIMEOUT = Duration.ofSeconds(5);
+    public static final Duration OPEN_AI_TIMEOUT = Duration.ofSeconds(30);
     public static final Duration O_LLAMA_AI_TIMEOUT = Duration.ofSeconds(100000);
 
     //400
@@ -44,7 +44,7 @@ public class Constants {
 
     //500
     public static final String NULL_POINTER_EXCEPTION_MESSAGE = "A null pointer exception occurred: ";
-    public static final String NULL_POINTER_EXCEPTION_USER_MESSAGE = "Yikes! Something’s missing! 😱 The bugs must be having a party. 🐛🍕";
+    public static final String NULL_POINTER_EXCEPTION_USER_MESSAGE = "Yikes! Something's missing! 😱 The bugs must be having a party. 🐛🍕";
 
     public static final String RUNTIME_EXCEPTION_MESSAGE = "A runtime error occurred. ";
     public static final String RUNTIME_EXCEPTION_USER_MESSAGE = "Oops! Something went wrong while we were running! ⚡";
