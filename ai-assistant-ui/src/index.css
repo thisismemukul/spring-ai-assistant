@@ -1,0 +1,248 @@
+@import './components/ui/animations.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+ 
+    --primary: 199 89% 48%;
+    --primary-foreground: 210 40% 98%;
+    --primary-50: 210 100% 97%;
+    --primary-100: 210 100% 95%;
+    --primary-200: 206 94% 87%;
+    --primary-300: 199 89% 75%;
+    --primary-400: 199 89% 64%;
+    --primary-500: 199 89% 48%;
+    --primary-600: 200 98% 39%;
+    --primary-700: 201 96% 32%;
+    --primary-800: 201 67% 28%;
+    --primary-900: 202 60% 24%;
+    --primary-950: 204 80% 16%;
+ 
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+ 
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    
+    /* Enhanced UI variables */
+    --enhanced-gradient-1: linear-gradient(135deg, hsl(210, 100%, 97%), hsl(199, 89%, 75%));
+    --enhanced-gradient-2: linear-gradient(135deg, hsl(199, 89%, 48%), hsl(204, 80%, 16%));
+    --enhanced-shadow-sm: 0 2px 8px -1px rgba(0, 24, 40, 0.08), 0 1px 2px -1px rgba(0, 24, 40, 0.05);
+    --enhanced-shadow-md: 0 4px 12px -1px rgba(0, 24, 40, 0.12), 0 2px 4px -1px rgba(0, 24, 40, 0.07);
+    --enhanced-shadow-lg: 0 12px 32px -2px rgba(0, 24, 40, 0.14), 0 4px 8px -2px rgba(0, 24, 40, 0.1);
+    --enhanced-blur-bg: rgba(255, 255, 255, 0.7);
+    
+    /* METLY-inspired vibrant colors */
+    --vibrant-yellow: 45 100% 50%;
+    --vibrant-yellow-foreground: 0 0% 0%;
+    --vibrant-black: 0 0% 2%;
+    --vibrant-blue: 230 89% 65%;
+    --vibrant-orange: 35 100% 50%;
+    --vibrant-light-purple: 240 67% 94%;
+ 
+    --radius: 0.5rem;
+    
+    /* Animation durations */
+    --animation-fast: 150ms;
+    --animation-medium: 300ms;
+    --animation-slow: 500ms;
+  }
+ 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 199 89% 48%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    
+    /* Enhanced UI variables for dark mode */
+    --enhanced-gradient-1: linear-gradient(135deg, hsl(222.2, 47%, 10%), hsl(217.2, 33%, 18%));
+    --enhanced-gradient-2: linear-gradient(135deg, hsl(199, 89%, 48%), hsl(204, 80%, 16%));
+    --enhanced-shadow-sm: 0 2px 8px -1px rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+    --enhanced-shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
+    --enhanced-shadow-lg: 0 12px 32px -2px rgba(0, 0, 0, 0.7), 0 4px 8px -2px rgba(0, 0, 0, 0.6);
+    --enhanced-blur-bg: rgba(10, 10, 20, 0.7);
+    
+    /* METLY-inspired vibrant colors for dark mode */
+    --vibrant-yellow: 45 100% 50%;
+    --vibrant-yellow-foreground: 0 0% 10%;
+    --vibrant-black: 0 0% 0%;
+    --vibrant-blue: 230 89% 65%;
+    --vibrant-orange: 35 100% 50%;
+    --vibrant-light-purple: 240 30% 20%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition duration-200 ease-in-out;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+  
+  .card {
+    @apply bg-card text-card-foreground rounded-lg shadow-sm p-6 border;
+  }
+  
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  
+  /* New modern component styles */
+  .modern-card {
+    @apply bg-card text-card-foreground rounded-xl p-6;
+    box-shadow: var(--enhanced-shadow-md);
+    transition: transform var(--animation-medium), box-shadow var(--animation-medium);
+  }
+  
+  .modern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--enhanced-shadow-lg);
+  }
+  
+  .glass-effect {
+    @apply backdrop-blur-md rounded-xl;
+    background: var(--enhanced-blur-bg);
+  }
+  
+  .text-gradient {
+    @apply text-transparent bg-clip-text;
+    background-image: var(--enhanced-gradient-2);
+  }
+  
+  /* METLY-inspired component styles */
+  .vibrant-card {
+    @apply rounded-xl shadow-lg transition-all duration-300;
+    background-color: hsl(var(--vibrant-yellow));
+    color: hsl(var(--vibrant-yellow-foreground));
+  }
+  
+  .vibrant-card-dark {
+    @apply rounded-xl shadow-lg transition-all duration-300;
+    background-color: hsl(var(--vibrant-black));
+    color: hsl(var(--vibrant-yellow));
+    border: 1px solid hsl(var(--vibrant-yellow) / 0.2);
+  }
+  
+  .ai-message-card {
+    @apply rounded-xl shadow-md overflow-hidden;
+    background-color: hsl(var(--vibrant-light-purple));
+    border-left: 4px solid hsl(var(--vibrant-blue));
+  }
+  
+  .user-message-card {
+    @apply rounded-xl shadow-md overflow-hidden;
+    background-color: hsl(var(--vibrant-yellow) / 0.1);
+    border-right: 4px solid hsl(var(--vibrant-yellow));
+  }
+  
+  .modern-button {
+    @apply px-5 py-3 rounded-md font-medium transition-all duration-200 inline-flex items-center gap-2;
+    background-color: hsl(var(--vibrant-yellow));
+    color: hsl(var(--vibrant-black));
+    box-shadow: 0 4px 10px -2px hsl(var(--vibrant-yellow) / 0.4);
+  }
+  
+  .modern-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px -2px hsl(var(--vibrant-yellow) / 0.6);
+  }
+  
+  .modern-avatar {
+    @apply rounded-full object-cover shadow-md;
+    border: 2px solid hsl(var(--vibrant-yellow));
+  }
+} 
+
+/* Animation keyframes */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse-subtle {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+.fade-in {
+  animation: fade-in var(--animation-medium) ease-out forwards;
+}
+
+.slide-up {
+  animation: slide-up var(--animation-medium) ease-out forwards;
+}
+
+.thinking {
+  animation: pulse-subtle 2s infinite;
+}
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+} 
